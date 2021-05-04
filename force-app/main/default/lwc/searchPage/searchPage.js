@@ -1,5 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
-import getOpps from '@salesforce/apex/OppTableController.getOpportunities';
+import getOpps from '@salesforce/apex/SearchPageController.getOpportunities';
+import sendOpp from '@salesforce/apex/SearchPageController.sendOpportunites';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const COLUMNS = [
@@ -26,33 +27,63 @@ export default class SearchPage extends LightningElement {
   @track columns = COLUMNS; // column data for data-table
 
   async searchValues(event){
-    if(event.keyCode === 13 && event.target.value){
-      const result = await getOpps({searchKey: event.target.value})
-      if(result && result.length > 0){
-        let oppUrl, accUrl;
-        this.oppList = result.map(row => {
-          oppUrl = `/${row.Id}`;
-          accUrl = `/${row.AccountId}`;
-          return {...row, oppUrl, accUrl};
-        })
-        // show the datatable template
-        this.recordsFound = true; 
-      }else{
-        // hide previous search result
-        this.recordsFound = false;  
-        // display msg 'No records found'
-        const evt = new ShowToastEvent({
-          title: 'Search Result',
-          message: 'No Records Found!',
-          variant: 'error'
-        });
-        this.dispatchEvent(evt);
+    try{
+      if(event.keyCode === 13 && event.target.value){
+        const result = await getOpps({searchKey: event.target.value})
+        if(result && result.length > 0){
+          let oppUrl, accUrl;
+          this.oppList = result.map(row => {
+            oppUrl = `/${row.Id}`;
+            accUrl = `/${row.AccountId}`;
+            return {...row, oppUrl, accUrl};
+          })
+          // show the datatable template
+          this.recordsFound = true; 
+        }else{
+          // hide previous search result
+          this.recordsFound = false;  
+          // display msg 'No records found'
+          const evt = new ShowToastEvent({
+            title: 'Search Result',
+            message: 'No Records Found!',
+            variant: 'error'
+          });
+          this.dispatchEvent(evt);
+        }
       }
-    }
+    }catch(er){console.log(er);}
   }
 
   updateRec(event){
-    console.log(event.detail.records);
     this.visibleRecords = [...event.detail.records];
+  }
+
+  // Manage Http callouts on buttonClick
+  async callRowAction(event){
+    try{
+      const recordId = event.detail.row.Id;
+      console.log(recordId);
+      if(event.detail.action.name === 'Send Opportunity'){
+        // Get the status code back
+        const resCode = await sendOpp({i: recordId});
+        console.log(resCode);
+        if(resCode && resCode == 200){
+          this.dispatchEvent(new ShowToastEvent({
+            title: 'Success!',
+            message: 'Record sent succesfully',
+            variant: 'success' 
+          }));
+        }
+      }
+    }catch(er){
+      console.log(er);
+      // Http request failed
+      // show an error mesage
+      this.dispatchEvent(new ShowToastEvent({
+        title: 'Failure!',
+        message: er.body.message,
+        variant: 'error'
+      }));
+    }
   }
 }
