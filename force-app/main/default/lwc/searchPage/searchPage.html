@@ -1,55 +1,33 @@
 <template>
-  <lightning-card>
-    <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
-      <div class="slds-col">
-        <div class="slds-p-horizontal_x-small slds-p-button_xx-small">
-          <lightning-input
-            type="search"
-            onchange={handleKeyChange}
-            onkeypress={handleSearch}
-            label="Search"
-            value={searchKey}
-            required
-            >          
+  <lightning-card title="Opportunities" icon-name="standard:opportunity">
+    <!-- Search option -->
+    <div class="slds-p-around_small slds-m-around_medium">
+      <lightning-layout>
+        <lightning-layout-item>
+          <lightning-input padding="around-small" label="Search" type="text" placeholder="Enter value..." onkeypress={searchValues} required>
           </lightning-input>
-        </div>
-      </div>
-      <div class="slds-col"> 
-        <div class="slds-col slds-p-buttom_xx-small">
-          <span style={controlPrevious}>
-            <lightning-button-icon icon-name="utility:left" variant="bare" size="medium" alternative-text="Previous Page" onclick={previousPage}></lightning-button-icon>
-          </span>
-          <label class="slds-text-color_weak slds-p-horizontal_x-small" for="pageNum">Page:</label>
-          <input type="number" id="pageNum" value={pageNumber} maxlength="4" onkeypress={handlePageNumberChange} class="customInput" title="Go to a Page"></input>
-          <span>&nbsp;of&nbsp;<b id="totalPages">{totalPages}</b></span>
-          <span style={controlNext}>
-            <lightning-button-icon icon-name="utility:right" variant="bare" size="medium" alternative-text="Next Page" onclick={nextPage} class="slds-p-horizontal_x-small"></lightning-button-icon>
-          </span>
-        </div>
-      </div>
-    </div>
-    <div class="slds-var-m-around_medium">
-      <lightning-layout vertical-align="end" class="slds-var-m-bottom_small">
-        
-        <!-- <lightning-layout-item class="slds-var-p-left_xx-small">
-          <lightning-button
-            label="Search"
-            onclick={handleSearch}
-          >
-        </lightning-button>
-        </lightning-layout-item> -->
+        </lightning-layout-item>
       </lightning-layout>
-      <!-- Display the record -->
-      <template if:true={opportunities}>
-        <lightning-datatable
-          key-field="Id"
-          hide-checkbox-column="true"
-          show-row-number-column="true"
-          data={opportunities}
-          columns={columns}
-        >
-      </lightning-datatable>
-      </template>
     </div>
+
+    <!-- Opp List -->
+    <template if:true={recordsFound}>
+      <lightning-card>
+        <div class="slds-p-around_medium">
+          <lightning-datatable 
+            key-field="Id"
+            data={visibleRecords}
+            columns={columns}
+            show-row-number-column="true"
+            hide-checkbox-column
+            onrowaction={callRowAction}
+          ></lightning-datatable>
+        </div>
+        <!-- Pagination -->
+        <div slot="footer">
+          <c-pagination records={oppList} onupdate={updateRec}></c-pagination>
+        </div>
+      </lightning-card>
+    </template>
   </lightning-card>
 </template>
