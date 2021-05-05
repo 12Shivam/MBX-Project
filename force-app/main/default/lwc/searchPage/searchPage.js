@@ -1,6 +1,7 @@
 import { LightningElement, track, wire } from 'lwc';
 import getOpps from '@salesforce/apex/SearchPageController.getOpportunities';
 import sendOpp from '@salesforce/apex/SearchPageController.sendOpportunites';
+import image from '@salesforce/resourceUrl/image01';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const COLUMNS = [
@@ -25,6 +26,10 @@ export default class SearchPage extends LightningElement {
   
   @track recordsFound = false; // show/hide datatable template
   @track columns = COLUMNS; // column data for data-table
+
+  get bgStyle(){
+    return `height:50rem;background-image:url(${image});`;
+  }
 
   async searchValues(event){
     try{
@@ -66,24 +71,22 @@ export default class SearchPage extends LightningElement {
       if(event.detail.action.name === 'Send Opportunity'){
         // Get the status code back
         const resCode = await sendOpp({i: recordId});
-        console.log(resCode);
         if(resCode && resCode == 200){
           this.dispatchEvent(new ShowToastEvent({
             title: 'Success!',
             message: 'Record sent succesfully',
             variant: 'success' 
           }));
+        }else{
+          // Http request failed
+          // show an error mesage
+          this.dispatchEvent(new ShowToastEvent({
+            title: 'Failure!',
+            message: er.body.message,
+            variant: 'error'
+          }));
         }
       }
-    }catch(er){
-      console.log(er);
-      // Http request failed
-      // show an error mesage
-      this.dispatchEvent(new ShowToastEvent({
-        title: 'Failure!',
-        message: er.body.message,
-        variant: 'error'
-      }));
-    }
+    }catch(er){console.log(er);}
   }
 }
