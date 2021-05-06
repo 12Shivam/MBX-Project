@@ -12,7 +12,17 @@
       <div class="slds-text-align_center">
           <span>Records: {totalRecordSize} </span>
           &nbsp;|&nbsp;
-          <span>Page {currentPage} of {totalPage}</span>
+          <span><strong>Page {currentPage} of {totalPage}</strong></span>
+          &nbsp;|&nbsp;
+          Record Size:&nbsp;
+          <span>
+            <select onchange={recordSizeHandler}>
+              <option>20</option>
+              <option>15</option>
+              <option>10</option>
+              <option>5</option>
+            </select>
+          </span>
       </div>
     </lightning-layout-item>
 

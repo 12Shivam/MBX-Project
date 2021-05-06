@@ -56,4 +56,10 @@ export default class Pagination extends LightningElement {
       }
     }));
   }
+
+  recordSizeHandler(event){
+    this.recordSize = event.target.value;
+    this.totalPage = Math.ceil(this.totalRecords.length/this.recordSize);
+    this.updateRecords();
+  }
 }

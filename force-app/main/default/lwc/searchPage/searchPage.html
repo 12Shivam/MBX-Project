@@ -1,36 +1,36 @@
 <template>
-  <div style={bgStyle}>
-    <lightning-card title="Opportunities" icon-name="standard:opportunity">
-      <!-- Search option -->
-      <div class="slds-p-around_small slds-m-around_medium">
-        <lightning-layout>
-          <lightning-layout-item>
-            <lightning-input padding="around-small" label="Search" type="text" placeholder="Enter value..." onkeypress={searchValues} required>
-            </lightning-input>
-          </lightning-layout-item>
-        </lightning-layout>
-      </div>
+  <lightning-card title="Opportunities" icon-name="standard:opportunity" class="bg">
 
-      <!-- Opp List -->
-      <template if:true={recordsFound}>
-        <lightning-card>
-          <div class="slds-p-around_medium">
-            <lightning-datatable 
-              key-field="Id"
-              data={visibleRecords}
-              columns={columns}
-              show-row-number-column="true"
-              hide-checkbox-column
-              onrowaction={callRowAction}
-            ></lightning-datatable>
-          </div>
+    <!-- Search option -->
+    <div class="slds-p-around_small bg">
+      <lightning-layout>
+        <lightning-layout-item>
+          <lightning-input padding="around-small" label="Search" type="text" placeholder="Enter value..." onkeypress={searchValues} required>
+          </lightning-input>
+        </lightning-layout-item>
+      </lightning-layout>
+    </div>
 
-          <!-- Pagination -->
-          <div slot="footer">
-            <c-pagination records={oppList} onupdate={updateRec}></c-pagination>
-          </div>
-        </lightning-card>
-      </template>
-    </lightning-card>
-  </div>
+    <!-- Opp List -->
+    <template if:true={recordsFound}>
+      <lightning-card>
+        <div class="slds-p-around_small bg">
+          <lightning-datatable 
+            key-field="Id"
+            data={visibleRecords}
+            columns={columns}
+            show-row-number-column="true"
+            hide-checkbox-column
+            onrowaction={callRowAction}
+          ></lightning-datatable>
+        </div>
+
+        <!-- Pagination -->
+        <div class="bg">
+          <c-pagination records={oppList} onupdate={updateRec}></c-pagination>
+        </div>
+      </lightning-card>
+    </template>
+
+  </lightning-card>
 </template>
