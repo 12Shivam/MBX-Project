@@ -32,5 +32,33 @@
       </lightning-card>
     </template>
 
+    <template if:true={openModal}>
+      <div class="slds-modal slds-fade-in-open slds-backdrop">
+        <div class="slds-modal__container">
+          <!-- Header Section -->
+          <div class="slds-modal__header">
+            <lightning-button-icon icon-name="utility:close" alternative-text="Close" size="medium"
+              variant="bare-inverse" onclick={closeModal} class="slds-modal__close">
+            </lightning-button-icon>
+            <h1><strong>Confirm Sending record to 3rd party App</strong></h1>
+          </div>
+          <!-- Body Section -->
+          <div class="slds-modal__content slds-p-around_medium">
+            <p><strong>Name:</strong>&nbsp;&nbsp;{opp.name}</p><br> 
+            <p><strong>Account Name:</strong>&nbsp;&nbsp;{opp.accName}</p><br>
+            <p><strong>Stage:</strong>&nbsp;&nbsp;{opp.stage}</p><br>
+            <p><strong>Type:</strong>&nbsp;&nbsp;{opp.type}</p><br>
+            <p><strong>Amount:</strong>&nbsp;&nbsp;${opp.amount}</p><br>
+          </div>
+          <!-- Footer Section -->
+          <div class="slds-modal__footer">
+            <button class="slds-button slds-button_destructive" onclick={closeModal}>Cancel</button>
+            <button class="slds-button slds-button_brand" onclick={sendRecord}>Send</button>
+          </div>
+        </div>
+      </div>
+
+    </template>
+
   </lightning-card>
 </template>

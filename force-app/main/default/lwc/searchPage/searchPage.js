@@ -1,7 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
 import getOpps from '@salesforce/apex/SearchPageController.getOpportunities';
 import sendOpp from '@salesforce/apex/SearchPageController.sendOpportunites';
-import image from '@salesforce/resourceUrl/image01';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const COLUMNS = [
@@ -26,10 +25,7 @@ export default class SearchPage extends LightningElement {
   
   @track recordsFound = false; // show/hide datatable template
   @track columns = COLUMNS; // column data for data-table
-
-  get bgStyle(){
-    return `height:50rem;background-image:url(${image});`;
-  }
+  @track openModal = false;
 
   async searchValues(event){
     try{
@@ -63,29 +59,47 @@ export default class SearchPage extends LightningElement {
     this.visibleRecords = [...event.detail.records];
   }
 
+  @track opp; //variable storing values for model popup
+  // open confirm popup once send is clicked in row
+  callRowAction(event){
+    if(event.detail.action.name === 'Send Opportunity'){
+      this.opp = {
+        id: event.detail.row.Id,
+        name: event.detail.row.Name,
+        accName: event.detail.row.AccountName__c,
+        stage: event.detail.row.StageName,
+        type: event.detail.row.Type,
+        amount: event.detail.row.Amount
+      }
+      this.openModal = true;
+    }
+  }
+  closeModal(){
+    this.opp = {};
+    this.openModal = false;
+  }
+
   // Manage Http callouts on buttonClick
-  async callRowAction(event){
+  async sendRecord(){
     try{
-      const recordId = event.detail.row.Id;
-      console.log(recordId);
-      if(event.detail.action.name === 'Send Opportunity'){
-        // Get the status code back
-        const resCode = await sendOpp({i: recordId});
-        if(resCode && resCode == 200){
-          this.dispatchEvent(new ShowToastEvent({
-            title: 'Success!',
-            message: 'Record sent succesfully',
-            variant: 'success' 
-          }));
-        }else{
-          // Http request failed
-          // show an error mesage
-          this.dispatchEvent(new ShowToastEvent({
-            title: 'Failure!',
-            message: er.body.message,
-            variant: 'error'
-          }));
-        }
+      const recordId = this.opp.id;
+      this.openModal = false;
+      // Get the status code back
+      const resCode = await sendOpp({i: recordId});
+      if(resCode && resCode == 200){
+        this.dispatchEvent(new ShowToastEvent({
+          title: 'Success!',
+          message: 'Record sent succesfully',
+          variant: 'success' 
+        }));
+      }else{
+        // Http request failed
+        // show an error mesage
+        this.dispatchEvent(new ShowToastEvent({
+          title: 'Failure!',
+          message: er.body.message,
+          variant: 'error'
+        }));
       }
     }catch(er){console.log(er);}
   }
