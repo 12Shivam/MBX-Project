@@ -59,6 +59,7 @@ export default class Pagination extends LightningElement {
 
   recordSizeHandler(event){
     this.recordSize = event.target.value;
+    this.currentPage = 1;
     this.totalPage = Math.ceil(this.totalRecords.length/this.recordSize);
     this.updateRecords();
   }
