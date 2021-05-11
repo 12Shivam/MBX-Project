@@ -15,7 +15,8 @@ const COLUMNS = [
     title: 'Send Opportunity',
     disabled: false,
     value: 'send',
-    variant: 'Success'
+    variant: 'Success',
+    alignment: 'center'
   }}
 ]
 

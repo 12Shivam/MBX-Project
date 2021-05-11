@@ -1,12 +1,16 @@
 :host {
-  --sds-c-card-color-background: rgba(238, 227, 165, 0.5);
+  --sds-c-card-color-background: rgba(239, 183, 134, 0.7);
+}
+
+.coloredText {
+  color: white;
 }
 
 .bg {
   height: 100%;
-  background-image: url('https://www.wallpapers4u.org/wp-content/uploads/light_background_texture_69531_1920x1080.jpg');
-  height: 100%;
+  background-image: url('https://cdn.pixabay.com/photo/2019/02/24/13/48/sunset-4017599_960_720.jpg');
   background-position: center;
-  background-repeat: no-repeat;
+  /* background-repeat: no-repeat; */
   background-size: cover;
+  /* opacity: 0.6 */
 }

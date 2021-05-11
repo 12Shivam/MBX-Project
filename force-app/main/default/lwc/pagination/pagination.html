@@ -10,11 +10,11 @@
     <!-- Page Status -->
     <lightning-layout-item flexibility="grow">
       <div class="slds-text-align_center">
-          <span>Records: {totalRecordSize} </span>
+          <span class="coloredText">Records: {totalRecordSize} </span>
           &nbsp;|&nbsp;
-          <span><strong>Page {currentPage} of {totalPage}</strong></span>
+          <span class="coloredText"><strong>Page {currentPage} of {totalPage}</strong></span>
           &nbsp;|&nbsp;
-          Record Size:&nbsp;
+          <span class="coloredText">Record Size:</span>&nbsp;
           <span>
             <select onchange={recordSizeHandler}>
               <option>20</option>
