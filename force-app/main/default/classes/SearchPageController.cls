@@ -18,27 +18,33 @@ public class SearchPageController {
     public static Integer sendOpportunites(String i){
         // fetch opportunity record from the id provided
         Opportunity opp = [SELECT Name, AccountId, StageName, Type, Amount from Opportunity where Id=:i];
-        // convert the opp to JSON 
-        String resBody = JSON.serialize(opp);
+        try{
+            // convert the opp to JSON 
+            String resBody = JSON.serialize(opp);
 
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-        request.setEndpoint('https://project4.free.beeceptor.com/mbx');
-        request.setMethod('POST');
-        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
-        // Set the body as JSON object
-        request.setBody(resBody);
-        HttpResponse response = http.send(request);
-        
-        if(response.getStatusCode() == 200){
-            opp.Integration_Status__c = 'Success';
-            opp.Integration_Comments__c = 'Success';
+            Http http = new Http();
+            HttpRequest request = new HttpRequest();
+            request.setEndpoint('https://project4.free.beeceptor.com/mbx');
+            request.setMethod('POST');
+            request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+            // Set the body as JSON object
+            request.setBody(resBody);
+            HttpResponse response = http.send(request);
+            
+            if(response.getStatusCode() == 200){
+                opp.Integration_Status__c = 'Success';
+                opp.Integration_Comments__c = 'Success';
+                update opp;
+            }else{
+                // opp.Integration_Status__c = 'Failure';
+                opp.Integration_Comments__c = response.getStatus();
+                update opp;
+            }
+            return response.getStatusCode();
+        }catch(Exception e){
+            opp.Integration_Comments__c = e.getMessage();
             update opp;
-        }else{
-            opp.Integration_Status__c = 'Failure';
-            opp.Integration_Comments__c = response.getStatus();
-            update opp;
+            return 400;
         }
-        return response.getStatusCode();
     }   
 }
